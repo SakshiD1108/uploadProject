@@ -3,7 +3,10 @@ import path from "path";
 import { factory } from "../respository-helper/factory";
 import fs from "fs";
 import ShortUniqueId from "short-unique-id";
+import download from "download"
+import DownloaderHelper from "node-downloader-helper"
 import upload from "../multer";
+import { request } from "http";
 let __dirname = path.resolve();
 
 export const router = express.Router();
@@ -25,7 +28,7 @@ var uid = new ShortUniqueId({ dictionary: 'hex' });
 var color =  uid.randomUUID(6);
 
 
-router.post("/", upload.array("file",20) , async (request, response) => {
+router.post("/", upload.single("file") , async (request, response) => {
   try {
 
     const file = request.file;
@@ -74,8 +77,9 @@ router.post("/", upload.array("file",20) , async (request, response) => {
 
 router.get("/",  async (request, response) => {
   try {
+    const userId = request.query.userId;
 
-    const getAllFiles = await factory.getMongobdFileUpload().getFiles("62c83a27c7c73bb190c3f205");
+    const getAllFiles = await factory.getMongobdFileUpload().getFiles(userId);
     console.log(getAllFiles)
 
     if (getAllFiles) {
@@ -135,8 +139,98 @@ router.delete("/", async (request, response) => {
 });
 
 
-router.get("/download/4df82d", function(req, res, next){ 
+router.get("/download", async(req, res) => {
+  try{
+
+    const code = req.query.code
+    // const fileUrl ="uploads/sakshi/1657373564626.jpg"
+    // const fileUrl =process.cwd() + "uploads/sakshi/1657439943971.jpg";
+    // console.log(process.cwd())
+
+    // const dirPath = path.join(__dirname, 'uploads/sakshi/1657439943971.jpg')
+    //  console.log(dirPath)
+
+    // let matchCode  = await factory 
+    // .getMongobdFileUpload()
+    // .getCode(code);
+
+     let matchCode = true;
+
+    console.log(matchCode)
+    
+    if (matchCode) {
+
+     // const file = 'GFG.jpeg';
+// Path at which image will be downloaded
+//const filePath = `${__dirname}/files`; 
   
-  var path =__dirname+'/uploads/sakshi/1657439943971.jpg';
-  res.download(path);
+// const  dl = new DownloaderHelper(file , filePath);
+  
+// dl.on('end', () => console.log('Download Completed'))
+// dl.start();
+
+    //   res.download(dirPath, function(err) {
+    //     if(err) {
+    //         console.log(err);
+    //     }
+    // })
+
+      // const path = "1657440745729.jpg";
+      // const writeStream = fs.createWriteStream(dirPath);
+   
+      // res.pipe(writeStream);
+   
+      // writeStream.on("open", () => {
+      //    writeStream.close();
+      //    console.log("Download Completed!");
+      // })
+  
+    // var src = fs.createReadStream(dirPath);
+    // src.on('open', function () {
+    //     src.pipe(res);
+    //     console.log('down completed: ' + dirPath);
+    // });
+    // src.on('error', function (err) {
+    //     console.log('' + err);
+    // });
+
+//const file = "uploads/sakshi/1657439943971.jpg";
+// Path to store the downloaded file
+
+// const filePath = `${__dirname}/uploads/sakshi/1657439943971.jpg`;
+
+// let dl =  download(filePath);
+  
+// dl.on('end', () => console.log('Download Completed'))
+// dl.start();
+
+
+// download(filePath)
+// .then(() => {
+//    console.log('File downloaded successfully!');
+// })
+      // res.download(dirPath);
+      // console.log( res.download(path))
+      res.status(400).json({
+        status: "ok",
+        message: "files downloded.",
+      });
+      return;
+    } else {
+      res.status(200).json({
+        status: "FAILED",
+        message: "file  not download successfully.",
+      });
+      return;
+    }
+
+  }catch (error) {
+    res.status(500).json({
+      status: "FAILED",
+      message: error.message,
+    });
+    return;
+
+  }
+  
 });

@@ -49,4 +49,16 @@ export const mongodbFileUploadQuery = {
         throw error;
       }
     },
+
+    async getCode(code) {
+      try {
+        const result = await client
+          .db(dbName)
+          .collection("files")
+          .findOne({code:code });
+        return result;
+      } catch (error) {
+        throw error;
+      }
+    },
 };
