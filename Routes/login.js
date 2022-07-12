@@ -11,8 +11,6 @@ import client from "../respository-helper/mongodb-user";
 export const router = express.Router();
 export default router;
 
-client;
-const dbName = process.env.db_name;
 
 router.post(
   "/",
@@ -23,13 +21,11 @@ router.post(
       const userName = request.body.userName;
       const password = request.body.password
 
-      const user = await client
-        .db(dbName)
-        .collection("users")
-        .findOne({
-           userName:userName
-        });
-      console.log(user);
+      const user = await factory
+        .getMongobdUser()
+        .getByUser(userName);
+
+        console.log(user)
 
       if (user !== null) {
         const compareUserPassword = bcrypt.compareSync(password, user.password);

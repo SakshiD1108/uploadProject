@@ -50,12 +50,12 @@ export const mongodbFileUploadQuery = {
       }
     },
 
-    async getCode(code) {
+    async getFile(userId, code) {
       try {
         const result = await client
           .db(dbName)
           .collection("files")
-          .findOne({code:code });
+          .findOne({ userId: userId, code: code }, { fileUrl: 1 });
         return result;
       } catch (error) {
         throw error;

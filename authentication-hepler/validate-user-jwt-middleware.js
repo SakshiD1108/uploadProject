@@ -4,13 +4,11 @@ import { factory } from "../respository-helper/factory";
 export const authenticateUserJWT = (request, response, next) => {
   try {
     async function validateUserJwt(userObject) {
-      request.email = userObject.email;
-      request.mobileNo = userObject.mobileNo;
-      request.Role = userObject.Role;
-
+      request.userName = userObject.userName;
+      
       const doesUserExist = await factory
         .getMongobdUser()
-        .getByUser(userObject.email, userObject.mobileNo, userObject.Role);
+        .getByUser(userObject.userName);
 
       console.log(doesUserExist);
 
